@@ -116,6 +116,7 @@
                 "podman",
                 "podman-compose",
                 "podman-tui",
+                "policycoreutils",
                 "polkit-kde",
                 "python3-devel",
                 "rsync",
