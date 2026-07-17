@@ -113,6 +113,8 @@
                 "plasma-systemmonitor",
                 "plasma-workspace",
                 "plasma-workspace-wallpapers",
+                "plymouth",
+                "plymouth-system-theme",
                 "podman",
                 "podman-compose",
                 "podman-tui",

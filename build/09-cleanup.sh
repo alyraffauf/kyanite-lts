@@ -43,6 +43,26 @@ echo "application/vnd.flatpak.ref=io.github.kolunmi.Bazaar.desktop" >>/usr/share
 
 echo "::endgroup::"
 
+echo "::group:: Regenerate initramfs"
+
+readarray -t KERNEL_VERSIONS < <(find /usr/lib/modules -mindepth 1 -maxdepth 1 -type d -printf '%f\n')
+if [[ ${#KERNEL_VERSIONS[@]} -ne 1 ]]; then
+    echo "Expected exactly one installed kernel, found ${#KERNEL_VERSIONS[@]}" >&2
+    exit 1
+fi
+
+KERNEL_VERSION="${KERNEL_VERSIONS[0]}"
+dracut \
+    --no-hostonly \
+    --kver "${KERNEL_VERSION}" \
+    --reproducible \
+    --tmpdir /boot \
+    --zstd \
+    --add ostree \
+    --force "/usr/lib/modules/${KERNEL_VERSION}/initramfs.img"
+
+echo "::endgroup::"
+
 echo "::group:: Fix bootc lint issues"
 
 # Fix /var/run symlink if it was broken by package installation (e.g., Steam)
