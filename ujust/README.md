@@ -230,7 +230,7 @@ clean-containers:
 
 ## Important: Package Installation
 
-**Do not install packages via dnf5/rpm in ujust commands.** Bootc images are immutable and package installation should happen at build time in [`build/02-fedora-packages.sh`](../../build/02-fedora-packages.sh) or [`build/03-third-party-packages.sh`](../../build/03-third-party-packages.sh).
+**Do not install packages via dnf/rpm in ujust commands.** Bootc images are immutable and package installation should happen at build time through [`build/02-centos-packages.sh`](../../build/02-centos-packages.sh) and [`packages.json`](../../packages.json).
 
 For runtime package installation, use:
 

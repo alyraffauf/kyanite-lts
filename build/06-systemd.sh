@@ -20,8 +20,12 @@ USER_DISABLE=()
 # Split IMAGE_FLAVOR into array of variant names (e.g., "dx" -> ["dx"])
 # Always includes "main" as the base
 IFS='-' read -ra FLAVOR_PARTS <<<"${IMAGE_FLAVOR}"
+VARIANTS=(main)
+for variant in "${FLAVOR_PARTS[@]}"; do
+    [[ ${variant} == "main" ]] || VARIANTS+=("${variant}")
+done
 
-for variant in main "${FLAVOR_PARTS[@]}"; do
+for variant in "${VARIANTS[@]}"; do
     # Check if variant exists in services.json
     if jq -e ".variants.${variant}" /ctx/services.json >/dev/null 2>&1; then
         echo "Processing services for variant: ${variant}"
@@ -95,5 +99,7 @@ if [[ ${#USER_DISABLE[@]} -gt 0 ]]; then
 fi
 
 echo "::endgroup::"
+
+systemctl set-default graphical.target
 
 echo "Systemd service configuration complete!"

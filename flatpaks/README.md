@@ -22,7 +22,7 @@ Flatpak preinstall is a feature that allows system administrators to define Flat
 
 ## Important: Installation Timing
 
-**Flatpaks are NOT included in the ISO or container image.** They are downloaded and installed after:
+**Flatpaks are not included in the container or generated disk image.** They are downloaded and installed after:
 
 - User completes initial system setup
 - Network connection is established
@@ -30,10 +30,10 @@ Flatpak preinstall is a feature that allows system administrators to define Flat
 
 This means:
 
-- The ISO remains small and bootable offline
+- The OS image does not embed large application payloads
 - Users need an internet connection after installation
 - First boot may take longer while Flatpaks download and install
-- This is NOT an offline ISO with pre-embedded applications
+- This is not an offline application bundle
 
 ## File Format
 

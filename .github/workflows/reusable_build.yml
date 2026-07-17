@@ -53,8 +53,8 @@ jobs:
               with:
                   # 2.6.x writes tag-based `.sig` attachments by default;
                   # cosign 3.x defaults to OCI 1.1 referrers which the
-                  # containers/image stack on Fedora 44 doesn't read yet
-                  # (rpm-ostree fails with "no signature exists").
+                  # The installed containers/image policy reads legacy
+                  # sigstore attachments rather than OCI 1.1 referrers.
                   cosign-release: "v2.6.3"
 
             - name: Maximize build space
@@ -84,13 +84,13 @@ jobs:
                       type=sha,enable=${{ github.event_name == 'pull_request' }}
                       type=ref,event=pr
                   labels: |
-                      io.artifacthub.package.readme-url=https://raw.githubusercontent.com/${{ github.repository_owner }}/kyanite/${{ github.sha }}/README.md
+                      io.artifacthub.package.readme-url=https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/README.md
                       org.opencontainers.image.created=${{ steps.date.outputs.date }}
                       org.opencontainers.image.description=${{ env.IMAGE_DESC }}
-                      org.opencontainers.image.documentation=https://raw.githubusercontent.com/${{ github.repository_owner }}/kyanite/${{ github.sha }}/README.md
-                      org.opencontainers.image.source=https://github.com/${{ github.repository_owner }}/kyanite/blob/${{ github.sha }}/Containerfile
+                      org.opencontainers.image.documentation=https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/README.md
+                      org.opencontainers.image.source=https://github.com/${{ github.repository }}/blob/${{ github.sha }}/Containerfile
                       org.opencontainers.image.title=${{ env.IMAGE_NAME }}
-                      org.opencontainers.image.url=https://github.com/${{ github.repository_owner }}/kyanite/tree/${{ github.sha }}
+                      org.opencontainers.image.url=https://github.com/${{ github.repository }}/tree/${{ github.sha }}
                       org.opencontainers.image.vendor=${{ github.repository_owner }}
                       org.opencontainers.image.version=${{ env.DEFAULT_TAG }}.{{date 'YYYYMMDD'}}
                       io.artifacthub.package.deprecated=false
@@ -148,7 +148,6 @@ jobs:
               if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
               env:
                   DIGEST: ${{ steps.push.outputs.digest }}
-                  TAGS: ${{ steps.metadata.outputs.tags }}
                   SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
                   COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
               run: |
@@ -171,10 +170,8 @@ jobs:
                       exit 1
                   fi
                   trap 'shred -u /tmp/cosign.key 2>/dev/null || rm -f /tmp/cosign.key' EXIT
-                  images=""
-                  for tag in ${TAGS}; do
-                    images+="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${tag}@${DIGEST} "
-                  done
-                  echo "Images to sign: ${images}"
-                  cosign sign -y --key /tmp/cosign.key ${images}
-                  echo "✓ Images signed successfully"
+                  image="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}@${DIGEST}"
+                  echo "Signing image digest: ${image}"
+                  cosign sign -y --key /tmp/cosign.key "${image}"
+                  cosign verify --key cosign.pub "${image}"
+                  echo "Image signed and verified successfully"

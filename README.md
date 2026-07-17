@@ -1,158 +1,96 @@
-# Kyanite
+# Kyanite LTS
 
-A Fedora Kinoite spin I run as my daily driver. KDE Plasma, no corporate branding, rough edges sanded off.
+A long-term-support counterpart to [Kyanite](https://github.com/alyraffauf/kyanite), built on CentOS Stream 10 with KDE Plasma.
 
-![](./_img/screenshot.png)
+Kyanite LTS keeps Kyanite's desktop defaults, Flatpak-first application model, Homebrew integration, local-LLM Quadlets, and custom `ujust` recipes while following the slower CentOS and EPEL package lifecycle.
 
-## What's different from stock Kinoite
+## Highlights
 
-- Firefox via Mozilla's official Flatpak; Bazaar in place of Discover.
-- Flathub set up on first boot; Fedora's flatpak remotes removed.
-- Fish as the default shell, dynamic wallpapers, fcitx5 for CJK input.
-- Fuller codec stack via [negativo17](https://negativo17.org/) — h264/h265/AV1 playback just works.
-- Heavy stuff (Docker, virt, Steam, ROCm, etc.) lives in [sysexts](#optional-sysexts) instead of the base image.
-- PipeWire filter chains for some laptop speaker DSP setups.
-- Ollama Quadlets ready to go for local LLMs on CPU, ROCm, or Vulkan.
+- KDE Plasma 6 from EPEL with a Wayland SDDM session.
+- Firefox from Mozilla's official Flatpak and Bazaar in place of Discover.
+- Flathub configured for first-boot application installation.
+- Multimedia codecs from Negativo17's EL multimedia repository.
+- Fish, Homebrew, Podman, development tools, and hardware utilities included.
+- PipeWire filter chains for supported laptop speaker configurations.
+- Ollama and Open WebUI Quadlets for local LLM workloads.
+- Automatic OS updates through bootc's native update timer.
 
-I borrow the [ujust](https://github.com/ublue-os/packages/tree/main/packages/ublue-os-just) command framework and a couple of utility packages from Universal Blue's COPR, but everything else is built straight on Fedora Kinoite.
+## Install
 
-## Quick Start
+Kyanite LTS and Fedora-based Kyanite are separate operating-system families. Reinstall when moving between them; an in-place Fedora-to-CentOS rebase is not supported.
 
-If you're on a bootc system already (Kinoite, Aurora, etc.):
+From an existing compatible CentOS bootc system:
 
 ```bash
-sudo bootc switch ghcr.io/alyraffauf/kyanite:stable
+sudo bootc switch ghcr.io/alyraffauf/kyanite-lts:stable
 sudo systemctl reboot
 ```
 
-After it boots, `ujust --list` shows what custom recipes are available. A couple things to know up front: stuff under `/etc/skel` doesn't auto-migrate, and rebasing across desktop environments (e.g. GNOME → KDE) usually goes badly.
-
-## Optional sysexts
-
-Anything heavy or opt-in lives in [kyanite-sysexts](https://github.com/alyraffauf/kyanite-sysexts) as systemd-sysext payloads. Install only what you actually want:
-
-| Sysext | What you get |
-|---|---|
-| `docker` | Docker CE + buildx, compose, model plugins |
-| `rocm` | AMD ROCm, HIP, OpenCL, rocm-smi |
-| `steam` | Native Steam, Gamescope, MangoHud, GameMode (i686 multilib) |
-| `syncthing` | Native Syncthing daemon |
-| `tailscale` | Tailscale mesh-VPN client + daemon |
-| `virt` | QEMU/KVM, libvirt, edk2-ovmf, virtio drivers |
+After the first boot, enable signature enforcement for subsequent updates:
 
 ```bash
-ujust install-sysext NAME
-ujust remove-sysext NAME
+sudo bootc switch ghcr.io/alyraffauf/kyanite-lts:stable --enforce-container-sigpolicy
 ```
 
-They auto-update via `systemd-sysupdate.timer`. Gaming launchers (Heroic, ProtonUp-Qt, Lutris) ship as Flatpaks — `ujust install-gaming-flatpaks`.
+Run `ujust --list` to see the included system and application recipes.
 
-## Local LLMs (Ollama)
-
-Three Quadlet units for running [Ollama](https://ollama.com/) as a user-level systemd service. The GPU runtimes live inside the container, so you don't have to install ROCm or Vulkan ICDs on the host.
+## Local LLMs
 
 ```bash
-ujust enable-ollama          # CPU (or NVIDIA on a kinoite-nvidia base)
-ujust enable-ollama-rocm     # AMD GPU via ROCm. Run configure-gpu-groups first.
-ujust enable-ollama-vulkan   # AMD GPU via Vulkan. Works on cards ROCm doesn't.
+ujust enable-ollama          # CPU or supported container GPU passthrough
+ujust enable-ollama-rocm     # AMD GPU through the Ollama ROCm image
+ujust enable-ollama-vulkan   # AMD GPU through Vulkan
+ujust enable-open-webui
 ```
 
-All three listen on `127.0.0.1:11434` and share the `ollama-data` volume, so model weights don't redownload when you switch backends. They're mutually exclusive: starting one stops the others.
+The services share a Podman network and store persistent data in named volumes. Templates live under `/usr/share/kyanite/quadlets/`.
 
-Start with `ollama-rocm` if you have an officially-supported AMD card (RDNA1/2 high-end, RDNA3, CDNA). If `ollama list` shows your model running on CPU, your card isn't in the bundled rocBLAS — switch to Vulkan.
+## Current Differences
 
-## Syncthing
+The first Kyanite LTS release intentionally omits components without maintained EL10 builds:
 
-```bash
-ujust install-sysext syncthing
-systemctl --user enable --now syncthing.service
-```
+- Ghostty is replaced by Konsole.
+- Fedora-built `kyanite-sysexts` are unavailable and must not be installed on Kyanite LTS.
+- Several fcitx5 language modules, dynamic Plasma wallpapers, and a few hardware utilities are not yet packaged in EPEL 10.
+- ISO generation is disabled while the CentOS bootc installer path remains unsuitable; QCOW2 and RAW images are supported for local testing.
 
-GUI at `http://127.0.0.1:8384`. Existing config in `~/.local/state/syncthing/` carries over (peer devices, folder lists, etc.).
+## Configuration
 
-> Coming from the old containerized Quadlet setup? Run `ujust remove-syncthing-quadlet` first to clean up.
+- `packages.json` declares package groups and RPM inclusions/exclusions.
+- `services.json` declares enabled system and user services.
+- `files/<variant>/` contains system overlays.
+- `brew/` contains Homebrew bundles.
+- `flatpaks/` contains first-boot Flatpak manifests.
+- `ujust/` contains custom user recipes.
 
-## Quadlets
+## Build
 
-Templates ship at `/usr/share/kyanite/quadlets/`. The `ujust enable-X` recipes copy a template into `~/.config/containers/systemd/` so OS updates won't clobber your edits. To customize (e.g. uncomment `HSA_OVERRIDE_GFX_VERSION` in `ollama-rocm.container`), edit your user copy, then:
-
-```bash
-systemctl --user daemon-reload
-systemctl --user restart <service>
-```
-
-`podman-auto-update.timer` is on by default, so any quadlet with `AutoUpdate=registry` (all of mine) refreshes nightly.
-
-## Customization & forking
-
-The configuration is declarative — fork it and edit a few JSON files:
-
-- [`packages.json`](packages.json) — packages per variant (`include` / `exclude`)
-- [`services.json`](services.json) — systemd units to enable at build time
-- `files/<variant>/` — variant-specific system files (only `main/` is populated)
-- [`brew/`](brew/) — Homebrew bundles installed at runtime via `ujust install-*`
-- [`flatpaks/`](flatpaks/) — Flatpaks preinstalled on first boot
-- [`ujust/`](ujust/) — custom ujust recipes
-
-The variant scaffold (`packages.json variants.{name}`, `IMAGE_FLAVOR=NAME` in CI) is still wired up even though I only build `kyanite` now. Flipping a CI switch can revive `dx` or any other variant.
-
-## Building locally
-
-Needs [Podman](https://podman.io/) and [Just](https://just.systems/):
+Requires Podman and Just:
 
 ```bash
-just build           # build the kyanite container
-just build-qcow2     # build a qcow2 for VM testing
-just build-iso       # ~10GB, takes 30+ min
-just run-vm          # boot the qcow2 in qemu
-```
-
-NVIDIA base experiment:
-
-```bash
-BASE_IMAGE=ghcr.io/ublue-os/kinoite-nvidia:latest \
-BASE_IMAGE_SHA=$(skopeo inspect docker://$BASE_IMAGE --format '{{.Digest}}') \
 just build
+just build-qcow2
+just run-vm
 ```
 
-Output lands in `output/`. I don't publish pre-built ISOs — install Fedora Kinoite and rebase, or build one yourself.
+Output lands in `output/`. Locally generated disk images use the test account `kyanite` with password `kyanite`; this account is not part of the published container image.
+
+## Upstream Sync
+
+This repository shares history with Kyanite and keeps it as the `upstream` Git remote. Reusable changes can be merged from `upstream/main`; CentOS-specific build, package, service, signing, and documentation files should be resolved deliberately rather than overwritten.
 
 ## Security
 
-Images are signed with [cosign](https://github.com/sigstore/cosign) against [`cosign.pub`](./cosign.pub):
+Published images are signed with the dedicated key in [`cosign.pub`](cosign.pub):
 
 ```bash
 cosign verify \
-  --key https://raw.githubusercontent.com/alyraffauf/kyanite/main/cosign.pub \
-  ghcr.io/alyraffauf/kyanite:stable
+  --key https://raw.githubusercontent.com/alyraffauf/kyanite-lts/main/cosign.pub \
+  ghcr.io/alyraffauf/kyanite-lts:stable
 ```
 
-### Switching to signed transport
-
-`ostree-image-signed:` only works once the running deployment ships kyanite's `policy.json` and `cosign.pub`. A fresh switch from non-kyanite is a two-step bootstrap:
-
-```bash
-# 1. Unsigned switch — gets you a deployment with the policy + key.
-sudo bootc switch ghcr.io/alyraffauf/kyanite:stable
-sudo systemctl reboot
-
-# 2. After reboot, switch the tracker to signed.
-sudo rpm-ostree rebase ostree-image-signed:docker://ghcr.io/alyraffauf/kyanite:stable
-sudo systemctl reboot
-```
-
-After step 2, `rpm-ostreed-automatic.timer` (on by default) verifies every pulled image against `cosign.pub` before any bytes touch your filesystem. `rpm-ostree status` should show `ostree-image-signed:` as the booted spec.
-
-## State of things
-
-It works well enough for me to use daily. Despite the rename, plenty of Fedora visual branding is still around (Kickoff logo, fastfetch, wallpapers). This is intended to be a very light repackage.
-
-## Resources
-
-- [kyanite-sysexts](https://github.com/alyraffauf/kyanite-sysexts) — the sysexts repo
-- [Universal Blue](https://universal-blue.org/) — the project I borrow ideas (and a few packages) from
-- [bootc docs](https://containers.github.io/bootc/) — the cloud-native OS layer underneath
+The private signing key and password are stored only as encrypted GitHub Actions secrets. Local signing material belongs under the gitignored `.secrets/` directory.
 
 ## License
 
-Apache 2.0. See [LICENSE.md](LICENSE.md). Based on [Fedora Kinoite](https://fedoraproject.org/kinoite/) with [KDE Plasma](https://kde.org/), inspired by [Universal Blue](https://universal-blue.org/).
+Apache 2.0. See [LICENSE.md](LICENSE.md). Kyanite LTS incorporates CentOS Stream, EPEL, KDE Plasma, and bootc under their respective licenses.

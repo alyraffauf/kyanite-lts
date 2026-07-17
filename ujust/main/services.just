@@ -3,19 +3,6 @@
 ### services.just
 ########################
 
-# Remove the legacy containerized Syncthing Quadlet (transition helper).
-# Use the syncthing sysext instead: `ujust install-sysext syncthing`.
-[group('Services')]
-remove-syncthing-quadlet:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    systemctl --user stop syncthing.service 2>/dev/null || true
-    rm -f "$HOME/.config/containers/systemd/syncthing.container"
-    systemctl --user daemon-reload
-    echo "Syncthing Quadlet removed. To run native syncthing, install the sysext:"
-    echo "  ujust install-sysext syncthing"
-    echo "  systemctl --user enable --now syncthing.service"
-
 # Enable the CPU/generic Ollama service (uses the official ollama:latest image)
 [group('Services')]
 enable-ollama:

@@ -1,4 +1,4 @@
-export image_name := env("IMAGE_NAME", "kyanite")
+export image_name := env("IMAGE_NAME", "kyanite-lts")
 export image_flavor := env("IMAGE_FLAVOR", "main")
 export default_tag := env("DEFAULT_TAG", "stable")
 export bib_image := env("BIB_IMAGE", "quay.io/centos-bootc/bootc-image-builder:latest@sha256:2b52843ea2bfda73b0a08d97e76b734393b1d3a804681b9fabb26723bd3a2f0b")
@@ -93,9 +93,9 @@ sudoif command *args:
 # Build the image using the specified parameters
 # Usage: just build [target_image] [tag] [variant]
 # Examples:
-#   just build                          # builds kyanite:stable (main variant)
+#   just build                          # builds kyanite-lts:stable (main variant)
 
-# just build kyanite stable dx       # builds kyanite-dx:stable
+# just build kyanite-lts stable dx   # builds kyanite-lts-dx:stable
 build target_image=image_name tag=default_tag flavor=image_flavor:
     #!/usr/bin/env bash
 
@@ -111,7 +111,7 @@ build target_image=image_name tag=default_tag flavor=image_flavor:
     if [[ -z "$(git status -s)" ]]; then
         BUILD_ARGS+=("--build-arg" "SHA_HEAD_SHORT=$(git rev-parse --short HEAD)")
     fi
-    BUILD_ARGS+=("--build-arg" "IMAGE_NAME={{ target_image }}")
+    BUILD_ARGS+=("--build-arg" "IMAGE_NAME={{ image_name }}")
     BUILD_ARGS+=("--build-arg" "IMAGE_FLAVOR={{ flavor }}")
 
     # Pass through base image overrides if set
@@ -192,8 +192,6 @@ _build-bib $target_image $tag $type $config: (_rootful_load_image target_image t
 
     args="--type ${type} "
     args+="--use-librepo=True "
-    args+="--rootfs=btrfs"
-
     BUILDTMP=$(mktemp -p "${PWD}" -d -t _build-bib.XXXXXXXXXX)
 
     sudo podman run \
@@ -230,17 +228,13 @@ _rebuild-bib $target_image $tag $type $config: (build target_image tag) && (_bui
 # Examples:
 #   just build-qcow2                                    # builds kyanite (main)
 
-# just build-qcow2 localhost/kyanite stable dx       # builds kyanite-dx
+# just build-qcow2 localhost/kyanite-lts stable dx  # builds kyanite-lts-dx
 [group('Build Virtal Machine Image')]
 build-qcow2 target_image=("localhost/" + _full_image_name) tag=default_tag flavor=image_flavor: (build ("localhost/" + image_name) tag flavor) && (_build-bib target_image tag "qcow2" "iso/disk.toml")
 
 # Build a RAW virtual machine image
 [group('Build Virtal Machine Image')]
 build-raw target_image=("localhost/" + _full_image_name) tag=default_tag flavor=image_flavor: (build ("localhost/" + image_name) tag flavor) && (_build-bib target_image tag "raw" "iso/disk.toml")
-
-# Build an ISO virtual machine image
-[group('Build Virtal Machine Image')]
-build-iso target_image=("localhost/" + _full_image_name) tag=default_tag flavor=image_flavor: (build ("localhost/" + image_name) tag flavor) && (_build-bib target_image tag "iso" "iso/iso.toml")
 
 # Rebuild a QCOW2 virtual machine image
 [group('Build Virtal Machine Image')]
@@ -249,10 +243,6 @@ rebuild-qcow2 target_image=("localhost/" + _full_image_name) tag=default_tag fla
 # Rebuild a RAW virtual machine image
 [group('Build Virtal Machine Image')]
 rebuild-raw target_image=("localhost/" + _full_image_name) tag=default_tag flavor=image_flavor: (build ("localhost/" + image_name) tag flavor) && (_build-bib target_image tag "raw" "iso/disk.toml")
-
-# Rebuild an ISO virtual machine image
-[group('Build Virtal Machine Image')]
-rebuild-iso target_image=("localhost/" + _full_image_name) tag=default_tag flavor=image_flavor: (build ("localhost/" + image_name) tag flavor) && (_build-bib target_image tag "iso" "iso/iso.toml")
 
 # Run a virtual machine with the specified image type and configuration
 _run-vm $target_image $tag $type $config:
@@ -306,10 +296,6 @@ run-vm-qcow2 target_image=("localhost/" + _full_image_name) tag=default_tag flav
 [group('Run Virtal Machine')]
 run-vm-raw target_image=("localhost/" + _full_image_name) tag=default_tag flavor=image_flavor: && (_run-vm target_image tag "raw" "iso/disk.toml")
 
-# Run a virtual machine from an ISO
-[group('Run Virtal Machine')]
-run-vm-iso target_image=("localhost/" + _full_image_name) tag=default_tag flavor=image_flavor: && (_run-vm target_image tag "iso" "iso/iso.toml")
-
 # Run a virtual machine using systemd-vmspawn
 [group('Run Virtal Machine')]
 spawn-vm rebuild="0" type="qcow2" ram="6G":
@@ -317,7 +303,7 @@ spawn-vm rebuild="0" type="qcow2" ram="6G":
 
     set -euo pipefail
 
-    [ "{{ rebuild }}" -eq 1 ] && echo "Rebuilding the ISO" && just build-vm {{ rebuild }} {{ type }}
+    [ "{{ rebuild }}" -eq 1 ] && echo "Rebuilding the VM image" && just build-vm {{ rebuild }} {{ type }}
 
     systemd-vmspawn \
       -M "bootc-image" \

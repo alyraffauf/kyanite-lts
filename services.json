@@ -3,15 +3,23 @@
         "main": {
             "system": {
                 "enable": [
-                    "flatpak-nuke-fedora.service",
+                    "bluetooth.service",
+                    "bootc-fetch-apply-updates.timer",
+                    "cups.service",
+                    "firewalld.service",
                     "flatpak-preinstall.service",
+                    "NetworkManager.service",
                     "podman.socket",
-                    "rpm-ostreed-automatic.timer"
+                    "sddm.service"
                 ],
                 "disable": []
             },
             "user": {
-                "enable": ["bazaar.service", "podman-auto-update.timer", "podman.socket"],
+                "enable": [
+                    "bazaar.service",
+                    "podman-auto-update.timer",
+                    "podman.socket"
+                ],
                 "disable": []
             }
         },

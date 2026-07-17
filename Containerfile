@@ -1,16 +1,15 @@
 ###############################################################################
 # BUILD ARGUMENTS
 ###############################################################################
-ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME:-kinoite}"
+ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME:-centos-bootc}"
 # Static value enables Renovate to detect and update the base image
-ARG BASE_IMAGE="quay.io/fedora-ostree-desktops/kinoite:44"
+ARG BASE_IMAGE="quay.io/centos-bootc/centos-bootc:c10s"
 ARG BREW_IMAGE="ghcr.io/ublue-os/brew:latest"
 # SHA pinning enables Renovate to automatically update dependencies
 # See: https://docs.renovatebot.com/docker/#digest-pinning
 
-# Base Image @ fedora-ostree-desktops/kinoite (upstream Fedora; ublue
-# customizations replicated in build/02-fedora-packages.sh)
-ARG BASE_IMAGE_SHA="sha256:70699ca22201161ae7727ee5b61a456da2a1c8dff6536c49228558353a92f15e"
+# Base Image @ centos-bootc/centos-bootc (CentOS Stream 10)
+ARG BASE_IMAGE_SHA="sha256:95397e8d1f672245159fdd4986130ec3999a91f3c6a5a788ce1d5ca28567e012"
 
 # Brew Image
 ARG BREW_IMAGE_SHA="sha256:c6f6775db732b58bf02e27ca89b4390c3b72db27aedcea62d15c09960be7a0cb"
@@ -38,10 +37,10 @@ COPY --from=brew /system_files /oci/brew
 FROM ${BASE_IMAGE}@${BASE_IMAGE_SHA} AS base
 
 # Build arguments for image metadata and variant selection
-ARG IMAGE_NAME="${IMAGE_NAME:-kyanite}"
+ARG IMAGE_NAME="${IMAGE_NAME:-kyanite-lts}"
 ARG IMAGE_VENDOR="${IMAGE_VENDOR:-alyraffauf}"
 ARG IMAGE_FLAVOR="${IMAGE_FLAVOR:-main}"
-ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME:-kinoite}"
+ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME:-centos-bootc}"
 ARG SHA_HEAD_SHORT="${SHA_HEAD_SHORT:-}"
 ARG UBLUE_IMAGE_TAG="${UBLUE_IMAGE_TAG:-stable}"
 
@@ -60,18 +59,13 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
 RUN --mount=type=cache,dst=/var/cache/dnf \
     --mount=type=cache,dst=/var/log \
     --mount=type=bind,from=ctx,source=/,target=/ctx \
-    IMAGE_FLAVOR="${IMAGE_FLAVOR}" \
-    /ctx/build/02-fedora-packages.sh
+    /ctx/build/00-centos-repositories.sh
 
 RUN --mount=type=cache,dst=/var/cache/dnf \
     --mount=type=cache,dst=/var/log \
     --mount=type=bind,from=ctx,source=/,target=/ctx \
     IMAGE_FLAVOR="${IMAGE_FLAVOR}" \
-    /ctx/build/03-third-party-packages.sh
-
-# 04-workarounds seds third-party .desktop files; must follow step 03.
-RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-    /ctx/build/04-workarounds.sh
+    /ctx/build/02-centos-packages.sh
 
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     IMAGE_FLAVOR="${IMAGE_FLAVOR}" \

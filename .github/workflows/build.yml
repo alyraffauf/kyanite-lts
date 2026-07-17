@@ -16,8 +16,8 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-    build-kyanite:
-        name: Build kyanite
+    build-kyanite-lts:
+        name: Build kyanite-lts
         uses: ./.github/workflows/reusable_build.yml
         secrets: inherit
         permissions:
@@ -25,7 +25,7 @@ jobs:
             packages: write
             id-token: write
         with:
-            image_name: "kyanite"
+            image_name: "kyanite-lts"
             image_flavor: "main"
-            image_desc: "Kyanite - A clean KDE Plasma bootc image"
-            image_keywords: "bootc,ublue,universal-blue,kde"
+            image_desc: "Kyanite LTS - A CentOS Stream KDE Plasma bootc image"
+            image_keywords: "bootc,centos-stream,lts,kde"

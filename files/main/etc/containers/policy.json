@@ -6,20 +6,6 @@
     ],
     "transports": {
         "docker": {
-            "registry.access.redhat.com": [
-                {
-                    "type": "signedBy",
-                    "keyType": "GPGKeys",
-                    "keyPath": "/etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release"
-                }
-            ],
-            "registry.redhat.io": [
-                {
-                    "type": "signedBy",
-                    "keyType": "GPGKeys",
-                    "keyPath": "/etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release"
-                }
-            ],
             "quay.io/toolbx-images": [
                 {
                     "type": "sigstoreSigned",
@@ -29,10 +15,10 @@
                     }
                 }
             ],
-            "ghcr.io/alyraffauf/kyanite": [
+            "ghcr.io/alyraffauf/kyanite-lts": [
                 {
                     "type": "sigstoreSigned",
-                    "keyPath": "/etc/pki/containers/kyanite.pub",
+                    "keyPath": "/usr/lib/pki/containers/kyanite-lts.pub",
                     "signedIdentity": {
                         "type": "matchRepository"
                     }

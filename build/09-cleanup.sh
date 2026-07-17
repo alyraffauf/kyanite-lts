@@ -57,8 +57,11 @@ fi
 echo "Cleaning up temporary build artifacts..."
 rm -rf /var/lib/dnf
 rm -rf /var/lib/freeipmi
-rm -rf /run/faillock
-rm -rf /run/sepermit
+find /run -mindepth 1 -maxdepth 1 \
+    ! -name secrets \
+    ! -name .containerenv \
+    -exec rm -rf {} +
+rm -rf /tmp/*
 
 echo "::endgroup::"
 

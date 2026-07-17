@@ -12,18 +12,24 @@ set -eoux pipefail
 echo "::group:: Copy Custom Files"
 
 IFS='-' read -ra FLAVOR_PARTS <<<"${IMAGE_FLAVOR}"
+VARIANTS=(main)
+for variant in "${FLAVOR_PARTS[@]}"; do
+    [[ ${variant} == "main" ]] || VARIANTS+=("${variant}")
+done
 
 # Copy variant file overlays
-for variant in main "${FLAVOR_PARTS[@]}"; do
+for variant in "${VARIANTS[@]}"; do
     if [[ -d "/ctx/files/${variant}" ]]; then
         echo "Copying files for: ${variant}"
         rsync -rvKl "/ctx/files/${variant}/" /
     fi
 done
 
+chmod 0755 /usr/bin/ujust
+
 # Consolidate Just files into the ublue-os custom recipe location
 mkdir -p /usr/share/ublue-os/just/
-for variant in main "${FLAVOR_PARTS[@]}"; do
+for variant in "${VARIANTS[@]}"; do
     if [[ -d "/ctx/ujust/${variant}" ]]; then
         echo "Installing ujust recipes for: ${variant}"
         find "/ctx/ujust/${variant}" -iname '*.just' -exec printf "\n\n" \; -exec cat {} \; >>/usr/share/ublue-os/just/60-custom.just
@@ -32,10 +38,10 @@ done
 
 # Stage Flatpak preinstall files
 mkdir -p /usr/share/flatpak/preinstall.d/
-for variant in main "${FLAVOR_PARTS[@]}"; do
+for variant in "${VARIANTS[@]}"; do
     if [[ -f "/ctx/flatpaks/${variant}.preinstall" ]]; then
         echo "Installing Flatpak preinstall for: ${variant}"
-        cp "/ctx/flatpaks/${variant}.preinstall" "/usr/share/flatpak/preinstall.d/kyanite-${variant}.preinstall"
+        cp "/ctx/flatpaks/${variant}.preinstall" "/usr/share/flatpak/preinstall.d/kyanite-lts-${variant}.preinstall"
     fi
 done
 
