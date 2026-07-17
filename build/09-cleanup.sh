@@ -45,13 +45,6 @@ echo "::endgroup::"
 
 echo "::group:: Fix bootc lint issues"
 
-# Fedora places semodule in /usr/bin while EL10 still uses /usr/sbin. OSTree's
-# staged finalizer inherits the current deployment's PATH, so cross-family
-# switches need the Fedora-compatible path in the target deployment.
-if [[ ! -e /usr/bin/semodule ]]; then
-    ln -s ../sbin/semodule /usr/bin/semodule
-fi
-
 # Fix /var/run symlink if it was broken by package installation (e.g., Steam)
 if [[ -d /var/run ]] && [[ ! -L /var/run ]]; then
     echo "Fixing /var/run symlink..."
