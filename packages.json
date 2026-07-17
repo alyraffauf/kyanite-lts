@@ -15,6 +15,7 @@
                 "NetworkManager-wifi",
                 "age",
                 "alsa-firmware",
+                "alsa-ucm",
                 "ansible-core",
                 "ark",
                 "bash-completion",
