@@ -52,7 +52,6 @@ The first Kyanite LTS release intentionally omits components without maintained 
 - Ghostty is replaced by Konsole.
 - Fedora-built `kyanite-sysexts` are unavailable and must not be installed on Kyanite LTS.
 - Several fcitx5 language modules, dynamic Plasma wallpapers, and a few hardware utilities are not yet packaged in EPEL 10.
-- ISO generation is disabled while the CentOS bootc installer path remains unsuitable; QCOW2 and RAW images are supported for local testing.
 
 ## Configuration
 
@@ -68,9 +67,10 @@ The first Kyanite LTS release intentionally omits components without maintained 
 Requires Podman and Just:
 
 ```bash
-just build
-just build-qcow2
-just run-vm
+just build           # build the kyanite-lts container
+just build-qcow2     # build a qcow2 for VM testing
+just build-iso       # ~10 GB, takes 30+ min (local only)
+just run-vm          # boot the qcow2 in qemu
 ```
 
 Output lands in `output/`. Locally generated disk images use the test account `kyanite` with password `kyanite`; this account is not part of the published container image.

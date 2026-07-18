@@ -236,6 +236,10 @@ build-qcow2 target_image=("localhost/" + _full_image_name) tag=default_tag flavo
 [group('Build Virtal Machine Image')]
 build-raw target_image=("localhost/" + _full_image_name) tag=default_tag flavor=image_flavor: (build ("localhost/" + image_name) tag flavor) && (_build-bib target_image tag "raw" "iso/disk.toml")
 
+# Build an ISO virtual machine image
+[group('Build Virtal Machine Image')]
+build-iso target_image=("localhost/" + _full_image_name) tag=default_tag flavor=image_flavor: (build ("localhost/" + image_name) tag flavor) && (_build-bib target_image tag "iso" "iso/iso.toml")
+
 # Rebuild a QCOW2 virtual machine image
 [group('Build Virtal Machine Image')]
 rebuild-qcow2 target_image=("localhost/" + _full_image_name) tag=default_tag flavor=image_flavor: (build ("localhost/" + image_name) tag flavor) && (_build-bib target_image tag "qcow2" "iso/disk.toml")
@@ -243,6 +247,10 @@ rebuild-qcow2 target_image=("localhost/" + _full_image_name) tag=default_tag fla
 # Rebuild a RAW virtual machine image
 [group('Build Virtal Machine Image')]
 rebuild-raw target_image=("localhost/" + _full_image_name) tag=default_tag flavor=image_flavor: (build ("localhost/" + image_name) tag flavor) && (_build-bib target_image tag "raw" "iso/disk.toml")
+
+# Rebuild an ISO virtual machine image
+[group('Build Virtal Machine Image')]
+rebuild-iso target_image=("localhost/" + _full_image_name) tag=default_tag flavor=image_flavor: (build ("localhost/" + image_name) tag flavor) && (_build-bib target_image tag "iso" "iso/iso.toml")
 
 # Run a virtual machine with the specified image type and configuration
 _run-vm $target_image $tag $type $config:
@@ -295,6 +303,10 @@ run-vm-qcow2 target_image=("localhost/" + _full_image_name) tag=default_tag flav
 # Run a virtual machine from a RAW image
 [group('Run Virtal Machine')]
 run-vm-raw target_image=("localhost/" + _full_image_name) tag=default_tag flavor=image_flavor: && (_run-vm target_image tag "raw" "iso/disk.toml")
+
+# Run a virtual machine from an ISO
+[group('Run Virtal Machine')]
+run-vm-iso target_image=("localhost/" + _full_image_name) tag=default_tag flavor=image_flavor: && (_run-vm target_image tag "iso" "iso/iso.toml")
 
 # Run a virtual machine using systemd-vmspawn
 [group('Run Virtal Machine')]

@@ -23,7 +23,7 @@ Valid types: `feat`, `fix`, `docs`, `chore`, `build`, `ci`, `refactor`, `test`.
 7. Declare services in `services.json`, not build scripts.
 8. Preserve `ID=centos` and `VERSION_ID=10` in `/usr/lib/os-release`.
 9. Do not enable Fedora-built `kyanite-sysexts` on this image.
-10. Do not restore ISO recipes without a tested CentOS bootc installer path.
+10. Validate ISO builds by booting the generated installer in QEMU and completing a guided installation before considering the installer path supported.
 
 ## Build Order
 
