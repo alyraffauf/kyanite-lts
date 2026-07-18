@@ -33,19 +33,6 @@ for variant in "${VARIANTS[@]}"; do
 done
 
 echo "::endgroup::"
-echo "::group:: Upgrade selinux-policy"
-
-# Match bluefin-lts: upgrade selinux-policy (42.x → 43.x from COPR) to
-# cover newer systemd/userdb socket architecture. noscripts avoids a
-# container build failure from semodule -B (no kernel policy to load into).
-dnf -y install 'dnf-command(versionlock)'
-dnf -y remove setroubleshoot || true
-dnf copr enable -y jreilly1821/c10s-gnome-50
-COPR_REPO=$(find /etc/yum.repos.d/ -name '*jreilly1821*gnome-50*' | head -1)
-echo 'exclude=*gnome* *gtk* *gdk* *pango* *gdm* *mutter* *libadwaita*' >> "$COPR_REPO"
-dnf -y install --setopt=tsflags=noscripts selinux-policy selinux-policy-targeted
-
-echo "::endgroup::"
 echo "::group:: Install CentOS workstation groups"
 
 if [[ ${#PACKAGE_GROUPS[@]} -gt 0 ]]; then
