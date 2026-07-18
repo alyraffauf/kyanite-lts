@@ -63,6 +63,14 @@ dracut \
 
 echo "::endgroup::"
 
+echo "::group:: Root filesystem directories"
+
+mkdir -p /nix
+chown root:root /nix
+chmod 755 /nix
+
+echo "::endgroup::"
+
 echo "::group:: Fix bootc lint issues"
 
 # Fix /var/run symlink if it was broken by package installation (e.g., Steam)
