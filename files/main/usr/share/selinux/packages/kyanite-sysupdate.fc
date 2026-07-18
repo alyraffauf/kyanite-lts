@@ -1,2 +1,0 @@
-/var/lib/sysupdate(/.*)? gen_context(system_u:object_r:var_lib_t,s0)
-/var/lib/extensions(/.*)? gen_context(system_u:object_r:var_lib_t,s0)
