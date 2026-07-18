@@ -1,8 +1,3 @@
-[[customizations.user]]
-name = "kyanite"
-password = "kyanite"
-groups = ["wheel"]
-
 [[customizations.filesystem]]
 mountpoint = "/"
 minsize = "20 GiB"
