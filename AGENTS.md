@@ -35,6 +35,7 @@ Valid types: `feat`, `fix`, `docs`, `chore`, `build`, `ci`, `refactor`, `test`.
 6. `07-homebrew.sh`: Homebrew system files and timers.
 7. `08-branding.sh`: Kyanite LTS release and KDE identity.
 8. `09-cleanup.sh`: desktop integration and bootc cleanup.
+9. `10-selinux-workarounds.sh`: compile and install SELinux policy modules from `files/main/usr/share/selinux/packages/`.
 
 ## Configuration
 

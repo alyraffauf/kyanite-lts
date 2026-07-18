@@ -91,6 +91,11 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     /ctx/build/09-cleanup.sh
 
+# 10-selinux-workarounds ships SELinux policy modules that won't be upstreamed
+# immediately (e.g. tuned-ppd-logging for RHEL-130547).
+RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
+    /ctx/build/10-selinux-workarounds.sh
+
 ###############################################################################
 # FINALIZE
 ###############################################################################

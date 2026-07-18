@@ -1,0 +1,12 @@
+module tuned-ppd-logging 1.0.0;
+
+require {
+	type tuned_ppd_t;
+	type tuned_log_t;
+	type var_log_t;
+	class file { append create getattr open read setattr write };
+	class dir { add_name write };
+}
+
+allow tuned_ppd_t var_log_t:dir { add_name write };
+allow tuned_ppd_t tuned_log_t:file { append create getattr open read setattr write };
