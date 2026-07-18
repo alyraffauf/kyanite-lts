@@ -1,0 +1,18 @@
+module bootupd-reads 1.0.0;
+
+require {
+    type bootupd_t;
+    type mount_var_run_t;
+    type passwd_file_t;
+    type proc_t;
+    class dir { read search };
+    class file { getattr open read };
+}
+
+# bootupctl update (and its lsblk child process) inspects block devices,
+# mounted filesystems, and swap state at boot from bootloader-update.service.
+allow bootupd_t proc_t:dir read;
+allow bootupd_t proc_t:file { getattr open read };
+allow bootupd_t mount_var_run_t:dir search;
+allow bootupd_t mount_var_run_t:file { getattr open read };
+allow bootupd_t passwd_file_t:file { getattr open read };
