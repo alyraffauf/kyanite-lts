@@ -39,8 +39,6 @@ if [[ ${#PACKAGE_GROUPS[@]} -gt 0 ]]; then
     dnf -y group install --nobest \
         --exclude='kernel-debug*' \
         --exclude='cockpit*' \
-        --exclude='PackageKit*' \
-        --exclude='plasma-discover*' \
         "${PACKAGE_GROUPS[@]}"
 fi
 
