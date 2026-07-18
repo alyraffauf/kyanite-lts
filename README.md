@@ -45,12 +45,28 @@ ujust enable-open-webui
 
 The services share a Podman network and store persistent data in named volumes. Templates live under `/usr/share/kyanite/quadlets/`.
 
+## Optional Sysexts
+
+Kyanite LTS has a separate CentOS Stream 10 sysext track. Fedora-built
+extensions are not compatible with this image.
+
+```bash
+ujust install-sysext docker
+ujust install-sysext syncthing
+ujust install-sysext tailscale
+ujust update-sysexts
+ujust remove-sysext NAME
+```
+
+The LTS extensions are built and labeled with the CentOS 10 SELinux policy.
+
 ## Current Differences
 
 The first Kyanite LTS release intentionally omits components without maintained EL10 builds:
 
 - Ghostty is replaced by Konsole.
-- Fedora-built `kyanite-sysexts` are unavailable and must not be installed on Kyanite LTS.
+- Kyanite LTS sysexts are built separately against CentOS Stream 10; Fedora-built
+  sysexts must not be installed on this image.
 - Several fcitx5 language modules, dynamic Plasma wallpapers, and a few hardware utilities are not yet packaged in EPEL 10.
 
 ## Configuration
