@@ -77,4 +77,11 @@ curl --retry 3 --fail --location \
 dnf config-manager --set-disabled epel-multimedia baseos-compose appstream-compose
 
 echo "::endgroup::"
+echo "::group:: Versionlock upgraded components"
+
+# Versionlock the COPR selinux-policy so the base EL10 42.x repos don't
+# re-downgrade them.
+dnf versionlock add selinux-policy selinux-policy-targeted
+
+echo "::endgroup::"
 echo "CentOS package installation complete!"
