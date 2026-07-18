@@ -22,6 +22,7 @@ install-sysext NAME:
 
     sudo install -D -m 0644 "$TMP/{{ NAME }}.transfer" "/etc/sysupdate.d/{{ NAME }}.transfer"
     sudo systemd-tmpfiles --create kyanite-sysexts.conf
+    sudo install -d -m 0755 "/var/lib/sysupdate/{{ NAME }}-lts"
     sudo systemctl enable --now systemd-sysupdate.timer
     sudo /usr/lib/systemd/systemd-sysupdate update
     sudo /usr/bin/systemd-sysext refresh
@@ -32,6 +33,10 @@ install-sysext NAME:
 # Pull newer versions of all installed LTS sysexts.
 [group('Extensions')]
 update-sysexts:
+    sudo install -d -m 0755 \
+        /var/lib/sysupdate/docker-lts \
+        /var/lib/sysupdate/syncthing-lts \
+        /var/lib/sysupdate/tailscale-lts
     sudo /usr/lib/systemd/systemd-sysupdate update
     sudo /usr/bin/systemd-sysext refresh
     sudo udevadm control --reload && sudo udevadm trigger
