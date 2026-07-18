@@ -159,6 +159,13 @@
             "exclude": [
                 "akonadi-server",
                 "akonadi-server-mysql",
+                "cockpit",
+                "cockpit-bridge",
+                "cockpit-packagekit",
+                "cockpit-storaged",
+                "cockpit-system",
+                "cockpit-ws",
+                "cockpit-ws-selinux",
                 "default-fonts-cjk-sans",
                 "ffmpegthumbnailer",
                 "firefox",
