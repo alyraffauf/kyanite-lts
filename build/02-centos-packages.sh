@@ -36,7 +36,10 @@ echo "::endgroup::"
 echo "::group:: Install CentOS workstation groups"
 
 if [[ ${#PACKAGE_GROUPS[@]} -gt 0 ]]; then
-    dnf -y group install --nobest --exclude='kernel-debug*' "${PACKAGE_GROUPS[@]}"
+    dnf -y group install --nobest \
+        --exclude='kernel-debug*' \
+        --exclude='cockpit*' \
+        "${PACKAGE_GROUPS[@]}"
 fi
 
 echo "::endgroup::"
