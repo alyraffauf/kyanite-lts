@@ -2,10 +2,10 @@ module kyanite-sysupdate 1.0;
 
 require {
     type init_t;
-    type systemd_importd_var_run_t;
+    type var_lib_t;
     class file { rename unlink };
     class lnk_file { create rename unlink };
 }
 
-allow init_t systemd_importd_var_run_t:file { rename unlink };
-allow init_t systemd_importd_var_run_t:lnk_file { create rename unlink };
+allow init_t var_lib_t:file { rename unlink };
+allow init_t var_lib_t:lnk_file { create rename unlink };
