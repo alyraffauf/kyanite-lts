@@ -8,10 +8,6 @@
 install-sysext NAME:
     #!/usr/bin/env bash
     set -euo pipefail
-    case "{{ NAME }}" in
-        docker|syncthing|tailscale) ;;
-        *) echo "Unsupported LTS sysext: {{ NAME }}" >&2; exit 2 ;;
-    esac
     BASE="https://github.com/alyraffauf/kyanite-sysexts/releases/download/sysext-lts-{{ NAME }}"
     TMP=$(mktemp -d)
     trap 'rm -rf "$TMP"' EXIT
@@ -22,6 +18,7 @@ install-sysext NAME:
 
     sudo install -D -m 0644 "$TMP/{{ NAME }}.transfer" "/etc/sysupdate.d/{{ NAME }}.transfer"
     sudo systemd-tmpfiles --create kyanite-sysexts.conf
+    sudo install -d -m 0755 "/var/lib/sysupdate/{{ NAME }}-lts"
     sudo systemctl enable --now systemd-sysupdate.timer
     sudo /usr/lib/systemd/systemd-sysupdate update
     sudo /usr/bin/systemd-sysext refresh
@@ -41,10 +38,6 @@ update-sysexts:
 remove-sysext NAME:
     #!/usr/bin/env bash
     set -euo pipefail
-    case "{{ NAME }}" in
-        docker|syncthing|tailscale) ;;
-        *) echo "Unsupported LTS sysext: {{ NAME }}" >&2; exit 2 ;;
-    esac
     sudo rm -f "/var/lib/extensions/{{ NAME }}.raw" \
               "/etc/sysupdate.d/{{ NAME }}.transfer"
     sudo rm -rf "/var/lib/sysupdate/{{ NAME }}-lts"
