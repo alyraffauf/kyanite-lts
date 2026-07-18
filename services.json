@@ -10,6 +10,7 @@
                     "flatpak-preinstall.service",
                     "NetworkManager.service",
                     "podman.socket",
+                    "rpm-ostreed-automatic.timer",
                     "sddm.service"
                 ],
                 "disable": []
