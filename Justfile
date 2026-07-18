@@ -111,7 +111,7 @@ build target_image=image_name tag=default_tag flavor=image_flavor:
     if [[ -z "$(git status -s)" ]]; then
         BUILD_ARGS+=("--build-arg" "SHA_HEAD_SHORT=$(git rev-parse --short HEAD)")
     fi
-    BUILD_ARGS+=("--build-arg" "IMAGE_NAME={{ image_name }}")
+    BUILD_ARGS+=("--build-arg" "IMAGE_NAME={{ target_image }}")
     BUILD_ARGS+=("--build-arg" "IMAGE_FLAVOR={{ flavor }}")
 
     # Pass through base image overrides if set
@@ -192,6 +192,8 @@ _build-bib $target_image $tag $type $config: (_rootful_load_image target_image t
 
     args="--type ${type} "
     args+="--use-librepo=True "
+    args+="--rootfs=btrfs"
+
     BUILDTMP=$(mktemp -p "${PWD}" -d -t _build-bib.XXXXXXXXXX)
 
     sudo podman run \
