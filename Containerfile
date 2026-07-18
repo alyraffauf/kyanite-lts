@@ -5,6 +5,8 @@ ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME:-centos-bootc}"
 # Static value enables Renovate to detect and update the base image
 ARG BASE_IMAGE="quay.io/centos-bootc/centos-bootc:c10s"
 ARG BREW_IMAGE="ghcr.io/ublue-os/brew:latest"
+ARG COMMON_IMAGE="ghcr.io/alyraffauf/kyanite-common:stable"
+ARG COMMON_IMAGE_SHA="sha256:297c1b049c24a613c9a6247f3f3eab0a8ce98e2a238a948306e8f853721ca798"
 # SHA pinning enables Renovate to automatically update dependencies
 # See: https://docs.renovatebot.com/docker/#digest-pinning
 
@@ -18,6 +20,7 @@ ARG BREW_IMAGE_SHA="sha256:c6f6775db732b58bf02e27ca89b4390c3b72db27aedcea62d15c0
 # IMPORT STAGES
 ###############################################################################
 FROM ${BREW_IMAGE}@${BREW_IMAGE_SHA} AS brew
+FROM ${COMMON_IMAGE}@${COMMON_IMAGE_SHA} AS common
 
 FROM scratch AS ctx
 COPY /build /build
@@ -27,6 +30,7 @@ COPY /flatpaks /flatpaks
 COPY /ujust /ujust
 COPY /packages.json /packages.json
 COPY /services.json /services.json
+COPY --from=common / /common
 
 # Import Homebrew files
 COPY --from=brew /system_files /oci/brew

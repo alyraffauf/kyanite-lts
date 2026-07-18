@@ -24,6 +24,7 @@ Valid types: `feat`, `fix`, `docs`, `chore`, `build`, `ci`, `refactor`, `test`.
 8. Preserve `ID=centos` and `VERSION_ID=10` in `/usr/lib/os-release`.
 9. Do not enable Fedora-built `kyanite-sysexts` on this image.
 10. Validate ISO builds by booting the generated installer in QEMU and completing a guided installation before considering the installer path supported.
+11. Shared distro-neutral assets come from the digest-pinned `kyanite-common` OCI layer; keep CentOS/EPEL-specific overrides in this repository.
 
 ## Build Order
 

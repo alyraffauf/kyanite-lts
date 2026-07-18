@@ -73,7 +73,12 @@ just build-iso       # ~10 GB, takes 30+ min (local only)
 just run-vm          # boot the qcow2 in qemu
 ```
 
-Output lands in `output/`. Locally generated disk images use the test account `kyanite` with password `kyanite`; this account is not part of the published container image.
+The shared desktop assets come from the digest-pinned
+[`kyanite-common`](https://github.com/alyraffauf/kyanite-common) OCI layer.
+For local common-layer development, build it first and pass
+`COMMON_IMAGE=localhost/kyanite-common:stable`.
+
+Output lands in `output/`.
 
 ## Upstream Sync
 

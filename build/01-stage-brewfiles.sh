@@ -16,10 +16,12 @@ done
 
 mkdir -p /usr/share/ublue-os/homebrew/
 for variant in "${VARIANTS[@]}"; do
-    if [[ -d "/ctx/brew/${variant}" ]]; then
-        echo "Copying Brewfiles for: ${variant}"
-        cp "/ctx/brew/${variant}"/*.Brewfile /usr/share/ublue-os/homebrew/ 2>/dev/null || true
-    fi
+    for root in /ctx/common /ctx; do
+        if [[ -d "${root}/brew/${variant}" ]]; then
+            echo "Copying Brewfiles for: ${variant} from ${root}"
+            cp "${root}/brew/${variant}"/*.Brewfile /usr/share/ublue-os/homebrew/ 2>/dev/null || true
+        fi
+    done
 done
 
 echo "::endgroup::"
