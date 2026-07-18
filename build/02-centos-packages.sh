@@ -33,6 +33,7 @@ for variant in "${VARIANTS[@]}"; do
 done
 
 echo "::endgroup::"
+dnf -y remove setroubleshoot || true
 echo "::group:: Install CentOS workstation groups"
 
 if [[ ${#PACKAGE_GROUPS[@]} -gt 0 ]]; then
@@ -75,13 +76,6 @@ curl --retry 3 --fail --location \
     --output /etc/flatpak/remotes.d/flathub.flatpakrepo
 
 dnf config-manager --set-disabled epel-multimedia baseos-compose appstream-compose
-
-echo "::endgroup::"
-echo "::group:: Versionlock upgraded components"
-
-# Versionlock the COPR selinux-policy so the base EL10 42.x repos don't
-# re-downgrade them.
-dnf versionlock add selinux-policy selinux-policy-targeted
 
 echo "::endgroup::"
 echo "CentOS package installation complete!"
