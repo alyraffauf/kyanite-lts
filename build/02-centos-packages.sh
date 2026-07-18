@@ -33,7 +33,6 @@ for variant in "${VARIANTS[@]}"; do
 done
 
 echo "::endgroup::"
-dnf -y remove setroubleshoot || true
 echo "::group:: Install CentOS workstation groups"
 
 if [[ ${#PACKAGE_GROUPS[@]} -gt 0 ]]; then
@@ -78,11 +77,10 @@ curl --retry 3 --fail --location \
 dnf config-manager --set-disabled epel-multimedia baseos-compose appstream-compose
 
 echo "::endgroup::"
-echo "::group:: Versionlock base components"
+echo "::group:: Versionlock upgraded components"
 
-# Prevent base EL10 repos from accidentally downgrading critical packages
-# below the versions the image was built and tested against.
-dnf -y install 'dnf-command(versionlock)'
+# Versionlock the COPR selinux-policy so the base EL10 42.x repos don't
+# re-downgrade them.
 dnf versionlock add selinux-policy selinux-policy-targeted
 
 echo "::endgroup::"
