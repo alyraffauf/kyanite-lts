@@ -71,6 +71,22 @@ chmod 755 /nix
 
 echo "::endgroup::"
 
+echo "::group:: Make /usr/local persistent"
+
+# bootc's CentOS base keeps /usr/local in the immutable root, while tools such
+# as Determinate Nixd install there at runtime. Match Fedora Atomic's layout so
+# /usr/local writes persist under /var.
+if [[ ! -L /usr/local ]]; then
+    local_dir=/usr/local
+    mkdir -p /var/usrlocal
+    cp -a "${local_dir}/." /var/usrlocal/
+    rm -rf -- "${local_dir:?}"/* "${local_dir:?}"/.[!.]* "${local_dir:?}"/..?*
+    rmdir "${local_dir}"
+    ln -s ../var/usrlocal /usr/local
+fi
+
+echo "::endgroup::"
+
 echo "::group:: Fix bootc lint issues"
 
 # Fix /var/run symlink if it was broken by package installation (e.g., Steam)
