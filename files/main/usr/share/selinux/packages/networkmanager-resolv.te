@@ -1,0 +1,16 @@
+module networkmanager-resolv 1.0.0;
+
+require {
+    type NetworkManager_t;
+    type etc_t;
+    class file { create getattr open read setattr unlink write };
+    class lnk_file { create getattr open read unlink };
+}
+
+# NetworkManager with rc-manager=symlink writes temp files in /etc and
+# renames them over /etc/resolv.conf, then keeps it as a symlink to
+# /run/NetworkManager/resolv.conf. The el10 base policy denies unlink on
+# the existing plain etc_t file and symlink management in etc_t, so allow
+# the minimum required for that transition.
+allow NetworkManager_t etc_t:file { create getattr open read setattr unlink write };
+allow NetworkManager_t etc_t:lnk_file { create getattr open read unlink };
