@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-exec just --justfile /usr/share/ublue-os/justfile "$@"
