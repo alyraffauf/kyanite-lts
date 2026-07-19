@@ -33,6 +33,16 @@
                 "enable": [],
                 "disable": []
             }
+        },
+        "hwe": {
+            "system": {
+                "enable": [],
+                "disable": []
+            },
+            "user": {
+                "enable": [],
+                "disable": []
+            }
         }
     }
 }

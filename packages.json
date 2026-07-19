@@ -188,6 +188,14 @@
             "groups": [],
             "include": [],
             "exclude": []
+        },
+        "hwe": {
+            "groups": [],
+            "include": [
+                "python3-dnf-plugin-versionlock",
+                "skopeo"
+            ],
+            "exclude": []
         }
     }
 }

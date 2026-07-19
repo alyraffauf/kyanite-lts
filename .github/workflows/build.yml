@@ -29,3 +29,17 @@ jobs:
             image_flavor: "main"
             image_desc: "Kyanite LTS - A CentOS Stream KDE Plasma bootc image"
             image_keywords: "bootc,centos-stream,lts,kde"
+
+    build-kyanite-lts-hwe:
+        name: Build kyanite-lts-hwe
+        uses: ./.github/workflows/reusable_build.yml
+        secrets: inherit
+        permissions:
+            contents: read
+            packages: write
+            id-token: write
+        with:
+            image_name: "kyanite-lts-hwe"
+            image_flavor: "main-hwe"
+            image_desc: "Kyanite LTS HWE - A CentOS Stream KDE Plasma bootc image with Fedora CoreOS HWE kernel"
+            image_keywords: "bootc,centos-stream,lts,kde,hwe"

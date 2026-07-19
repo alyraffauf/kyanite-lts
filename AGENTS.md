@@ -18,6 +18,9 @@ Valid types: `feat`, `fix`, `docs`, `chore`, `build`, `ci`, `refactor`, `test`.
 2. Enable CRB before installing EPEL.
 3. Add external repositories disabled and enable them only for the required transaction.
 4. Do not use Fedora RPMs or Fedora-only COPR chroots in the image.
+   Exception: `main-hwe` and other HWE variants may consume the Fedora CoreOS
+   kernel from the Universal Blue akmods cache for Secure Boot-capable hardware
+   enablement; non-HWE variants must remain on the CentOS Stream kernel.
 5. Never install host RPMs from `ujust`; the root filesystem is image-managed.
 6. Declare packages and groups in `packages.json`, not build scripts.
 7. Declare services in `services.json`, not build scripts.
@@ -31,7 +34,8 @@ Valid types: `feat`, `fix`, `docs`, `chore`, `build`, `ci`, `refactor`, `test`.
 1. `00-centos-repositories.sh`: matching bootc compose repositories, CRB, EPEL, and multimedia repository.
 2. `01-stage-brewfiles.sh`: runtime Homebrew manifests.
 3. `02-centos-packages.sh`: workstation groups and package manifest.
-4. `05-copy-files.sh`: system files, `ujust` recipes, and Flatpak manifests.
+4. `03-hwe-kernel.sh`: HWE-only kernel swap (Fedora CoreOS kernel + common akmods).
+5. `05-copy-files.sh`: system files, `ujust` recipes, and Flatpak manifests.
 5. `06-systemd.sh`: system and user services plus graphical target.
 6. `07-homebrew.sh`: Homebrew system files and timers.
 7. `08-branding.sh`: Kyanite LTS release and KDE identity.
@@ -49,6 +53,7 @@ Valid types: `feat`, `fix`, `docs`, `chore`, `build`, `ci`, `refactor`, `test`.
 - User commands: `ujust/<variant>/*.just`.
 
 `IMAGE_FLAVOR=main` applies the main layer once. Hyphen-separated flavors compose additional exact variant blocks.
+Use `IMAGE_FLAVOR=main-hwe` to apply the HWE kernel and common akmods on top of the main layer.
 
 ## Validation
 

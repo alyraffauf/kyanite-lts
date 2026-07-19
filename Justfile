@@ -79,23 +79,26 @@ sudoif command *args:
 # Arguments:
 #   $target_image - The tag you want to apply to the image (default: $image_name).
 #   $tag - The tag for the image (default: $default_tag).
+#   $flavor - The image flavor (default: $image_flavor). Use hyphen-separated
+#             variants to compose layers, e.g. 'main-hwe' for the HWE kernel.
 #
 # The script constructs the version string using the tag and the current date.
 # If the git working directory is clean, it also includes the short SHA of the current HEAD.
 #
-# just build $target_image $tag
+# just build $target_image $tag $flavor
 #
 # Example usage:
-#   just build aurora lts
-#
-# This will build an image 'aurora:lts' with DX and GDX enabled.
+#   just build                          # builds kyanite-lts:stable (main variant)
+#   just build kyanite-lts stable main-hwe  # builds kyanite-lts-main-hwe:stable
+#   just build kyanite-lts stable dx        # builds kyanite-lts-dx:stable
 #
 # Build the image using the specified parameters
-# Usage: just build [target_image] [tag] [variant]
+# Usage: just build [target_image] [tag] [flavor]
 # Examples:
 #   just build                          # builds kyanite-lts:stable (main variant)
 
 # just build kyanite-lts stable dx   # builds kyanite-lts-dx:stable
+# just build kyanite-lts stable main-hwe  # builds kyanite-lts-main-hwe:stable
 build target_image=image_name tag=default_tag flavor=image_flavor:
     #!/usr/bin/env bash
 
