@@ -15,6 +15,11 @@ HWE_AKMODS_IMAGE="${HWE_AKMODS_IMAGE:-ghcr.io/ublue-os/akmods}"
 HWE_CERT_URL="${HWE_CERT_URL:-https://github.com/ublue-os/akmods/raw/main/certs/public_key.der}"
 
 echo "::group:: Remove CentOS kernel packages"
+# Record existing kernel module dirs so leftovers can be removed after the
+# swap. rpm --erase only removes files owned by the kernel packages; files
+# generated later (depmod, kernel-install hooks) keep the old directory
+# around, and 09-cleanup.sh expects exactly one kernel in /usr/lib/modules.
+mapfile -t OLD_KERNEL_DIRS < <(find /usr/lib/modules -mindepth 1 -maxdepth 1 -type d -printf '%f\n')
 PKGS=(
     kernel
     kernel-core
@@ -57,6 +62,15 @@ for pkg in "${INSTALL_PKGS[@]}"; do
 done
 
 dnf -y install "${RPM_NAMES[@]}"
+
+# Remove stale CentOS kernel module dirs left behind by rpm --erase so that
+# exactly one kernel (the HWE kernel) remains in /usr/lib/modules.
+for dir in "${OLD_KERNEL_DIRS[@]}"; do
+    if [[ -d "/usr/lib/modules/${dir}" ]]; then
+        echo "Removing stale CentOS kernel module dir: ${dir}"
+        rm -rf "/usr/lib/modules/${dir}"
+    fi
+done
 echo "::endgroup::"
 
 echo "::group:: Install common akmods for HWE kernel"
