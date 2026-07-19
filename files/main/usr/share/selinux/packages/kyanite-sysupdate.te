@@ -2,10 +2,17 @@ module kyanite-sysupdate 1.0;
 
 require {
     type init_t;
+    type systemd_importd_t;
     type var_lib_t;
-    class file { rename unlink };
+    class dir { add_name remove_name write };
+    class file { create getattr open rename setattr unlink write };
     class lnk_file { create rename unlink };
 }
 
 allow init_t var_lib_t:file { rename unlink };
 allow init_t var_lib_t:lnk_file { create rename unlink };
+
+# systemd-sysupdate delegates downloads to systemd-pull, which runs as
+# systemd_importd_t and stages images under /var/lib/sysupdate (var_lib_t).
+allow systemd_importd_t var_lib_t:dir { add_name remove_name write };
+allow systemd_importd_t var_lib_t:file { create getattr open rename setattr unlink write };
