@@ -17,14 +17,15 @@ ARG BASE_IMAGE_SHA="sha256:95397e8d1f672245159fdd4986130ec3999a91f3c6a5a788ce1d5
 ARG BREW_IMAGE_SHA="sha256:14ad3acb89bea0a7d98cacc206a4f590efcb794b7da7385bbeba4ed943289ad4"
 
 # HWE kernel source (Universal Blue akmods cache with Fedora CoreOS kernel)
-ARG HWE_KERNEL_IMAGE="${HWE_KERNEL_IMAGE:-ghcr.io/ublue-os/akmods-zfs:coreos-stable-43}"
+ARG HWE_KERNEL_IMAGE="ghcr.io/ublue-os/akmods-zfs:coreos-stable-43"
+ARG HWE_KERNEL_IMAGE_SHA="sha256:569197bffc0c71915f49726929683dcb930ba9ee296cc5ec848e1a539adba521"
 
 ###############################################################################
 # IMPORT STAGES
 ###############################################################################
 FROM ${BREW_IMAGE}@${BREW_IMAGE_SHA} AS brew
 FROM ${COMMON_IMAGE}@${COMMON_IMAGE_SHA} AS common
-FROM ${HWE_KERNEL_IMAGE} AS hwe_kernel
+FROM ${HWE_KERNEL_IMAGE}@${HWE_KERNEL_IMAGE_SHA} AS hwe_kernel
 
 FROM scratch AS ctx
 COPY /build /build
