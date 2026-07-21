@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-if [[ "${IMAGE_FLAVOR}" != *"hwe"* ]]; then
+if [[ ${IMAGE_FLAVOR} != *"hwe"* ]]; then
     echo "Non-HWE flavor (${IMAGE_FLAVOR}); skipping HWE kernel swap."
     exit 0
 fi
@@ -37,7 +37,7 @@ echo "::group:: Install HWE kernel from mounted akmods cache"
 find /tmp/kernel-rpms
 
 CACHED_VERSION=$(find /tmp/kernel-rpms -maxdepth 1 -name 'kernel-[0-9]*.rpm' -printf '%f\n' | head -1 | sed -E 's/^kernel-//;s/\.rpm$//')
-if [[ -z "${CACHED_VERSION}" ]]; then
+if [[ -z ${CACHED_VERSION} ]]; then
     echo "ERROR: Could not detect kernel version from /tmp/kernel-rpms"
     ls -la /tmp/kernel-rpms/
     exit 1
@@ -102,8 +102,8 @@ if [[ -d "${COMMON_AKMODS_DIR}/rpms" ]]; then
         "${COMMON_AKMODS_DIR}/rpms/kmods/"*xone*.rpm \
         "${COMMON_AKMODS_DIR}/rpms/kmods/"*openrazer*.rpm \
         "${COMMON_AKMODS_DIR}/rpms/kmods/"*framework-laptop*.rpm \
-        "${COMMON_AKMODS_DIR}/rpms/kmods/"*v4l2loopback*.rpm \
-        || echo "Warning: Some common akmods failed to install (non-critical)"
+        "${COMMON_AKMODS_DIR}/rpms/kmods/"*v4l2loopback*.rpm ||
+        echo "Warning: Some common akmods failed to install (non-critical)"
 fi
 
 rpm -qa | grep -E 'xone|openrazer|framework|v4l2loopback' || true
