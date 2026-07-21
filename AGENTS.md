@@ -36,11 +36,11 @@ Valid types: `feat`, `fix`, `docs`, `chore`, `build`, `ci`, `refactor`, `test`.
 3. `02-centos-packages.sh`: workstation groups and package manifest.
 4. `03-hwe-kernel.sh`: HWE-only kernel swap (Fedora CoreOS kernel + common akmods).
 5. `05-copy-files.sh`: system files, `ujust` recipes, and Flatpak manifests.
-5. `06-systemd.sh`: system and user services plus graphical target.
-6. `07-homebrew.sh`: Homebrew system files and timers.
-7. `08-branding.sh`: Kyanite LTS release and KDE identity.
-8. `09-cleanup.sh`: desktop integration and bootc cleanup.
-9. `10-selinux-workarounds.sh`: compile and install SELinux policy modules from `files/main/usr/share/selinux/packages/`.
+6. `06-systemd.sh`: system and user services plus graphical target.
+7. `07-homebrew.sh`: Homebrew system files and timers.
+8. `08-branding.sh`: Kyanite LTS release and KDE identity.
+9. `09-cleanup.sh`: desktop integration and bootc cleanup.
+10. `10-selinux-workarounds.sh`: compile and install SELinux policy modules from `files/main/usr/share/selinux/packages/`.
 
 ## Configuration
 
