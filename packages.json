@@ -81,6 +81,7 @@
                 "libffi-devel",
                 "libheif",
                 "libimobiledevice-utils",
+                "liberation-fonts",
                 "libva-utils",
                 "libxcrypt-compat",
                 "lm_sensors",
