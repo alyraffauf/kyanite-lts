@@ -5,7 +5,7 @@ require {
     type systemd_importd_t;
     type var_lib_t;
     class dir { add_name remove_name write };
-    class file { create getattr open rename setattr unlink write };
+    class file { create getattr open read rename setattr unlink write };
     class lnk_file { create rename unlink };
 }
 
