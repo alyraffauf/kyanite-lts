@@ -63,14 +63,6 @@ dracut \
 
 echo "::endgroup::"
 
-echo "::group:: Root filesystem directories"
-
-mkdir -p /nix
-chown root:root /nix
-chmod 755 /nix
-
-echo "::endgroup::"
-
 echo "::group:: Make /usr/local persistent"
 
 # bootc's CentOS base keeps /usr/local in the immutable root, while tools such
