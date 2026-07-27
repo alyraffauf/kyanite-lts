@@ -6,7 +6,7 @@ ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME:-centos-bootc}"
 ARG BASE_IMAGE="quay.io/centos-bootc/centos-bootc:c10s"
 ARG BREW_IMAGE="ghcr.io/ublue-os/brew:latest"
 ARG COMMON_IMAGE="ghcr.io/alyraffauf/kyanite-common:stable"
-ARG COMMON_IMAGE_SHA="sha256:d67701313a281763c1b0c6b8d0f5b8cd95286beec16b33a7245976518761aeea"
+ARG COMMON_IMAGE_SHA="sha256:8071adb49e734869a75d4cd6d8877c203fa07849cf3a9b15b3da620f0ef8c376"
 # SHA pinning enables Renovate to automatically update dependencies
 # See: https://docs.renovatebot.com/docker/#digest-pinning
 
