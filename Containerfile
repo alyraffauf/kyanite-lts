@@ -11,7 +11,7 @@ ARG COMMON_IMAGE_SHA="sha256:a1fa1ab4801f089c4d07481268bb283fa24bcbb902266caf557
 # See: https://docs.renovatebot.com/docker/#digest-pinning
 
 # Base Image @ centos-bootc/centos-bootc (CentOS Stream 10)
-ARG BASE_IMAGE_SHA="sha256:02fac3f064e9936f22d68bc7c95335fa6868204ebe75f182211d22c177352124"
+ARG BASE_IMAGE_SHA="sha256:2b7e3b1abf8db094d1efb083721dc0f72e6feeef2355fc16ea010d0266b2bb95"
 
 # Brew Image
 ARG BREW_IMAGE_SHA="sha256:8855464e5c150974c5edf4343ffef50ca37b1c4d96a648dce28927033010a372"
