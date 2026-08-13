@@ -18,7 +18,7 @@ ARG BREW_IMAGE_SHA="sha256:de0391c67209703bdf1249079c8d478d44eff864d62e7ec6f12aa
 
 # HWE kernel source (Universal Blue akmods cache with Fedora CoreOS kernel)
 ARG HWE_KERNEL_IMAGE="ghcr.io/ublue-os/akmods-zfs:coreos-stable-43"
-ARG HWE_KERNEL_IMAGE_SHA="sha256:49e87819079bbde5a47cfaea87c9e6ab5fa78c270677d3ee144d50508a0e5ce9"
+ARG HWE_KERNEL_IMAGE_SHA="sha256:38801795f48a2f9af9008fd6a98946aa6c7c1791134252fa53c6befd5d24248e"
 
 ###############################################################################
 # IMPORT STAGES
